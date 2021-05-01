@@ -165,49 +165,25 @@ public:
 template <typename T>
 class Matrix2 : public BaseMatrix<T>
 {
-protected :
-    T** ptr;
-    int height;
-    int width;
 public:
-    Matrix2(int Height = 2, int Width = 2)
-    {
-        if (Height <= 0 || Width <= 0)
-            throw WrongSizeException("Non-positive size of matrix");
-        height = Height;
-        width = Width;
-        ptr = new T * [height];
-        for (int i = 0; i < height; i++)
-            ptr[i] = new T[width];
-    }
-    Matrix2(const Matrix2& M)
-    {
-        height = M.height;
-        width = M.width;
-        ptr = new T * [height];
-        for (int i = 0; i < height; i++)
-        {
-            ptr[i] = new T[width];
-            for (int j = 0; j < width; j++)
-                ptr[i][j] = M.ptr[i][j];
-        }
-    }
+    Matrix2(int Height = 2, int Width = 2) :BaseMatrix<T>(Height = 2, Width = 2) {};
+    Matrix2(const Matrix2& M) :BaseMatrix<T>(M) {};
     Matrix2(string filename,int Height,int Width)
     {
         if (Height <= 0 || Width <= 0)
             throw WrongSizeException("Non-positive size of matrix");
-        height = Height;
-        width = Width;
-        ptr = new T * [height];
-        for (int i = 0; i < height; i++)
-            ptr[i] = new T[width];
+        this->height = Height;
+        this->width = Width;
+        this->ptr = new T * [this->height];
+        for (int i = 0; i < this->height; i++)
+            this->ptr[i] = new T[this->width];
         ifstream fin(filename);
         assert(fin.is_open());
         for (int i = 0; i < Height; i++)
         {
             for (int j = 0; j < Width; j++)
             {
-                fin >> ptr[i][j];
+                fin >> this->ptr[i][j];
             }
         }
 
@@ -218,11 +194,11 @@ public:
     {
         ofstream fout(filename);
         assert(fout.is_open());
-            for (int i = 0; i < height; i++)
+            for (int i = 0; i < this->height; i++)
             {
-                for (int j = 0; j < width; j++)
+                for (int j = 0; j < this->width; j++)
                 {
-                    fout << ptr[i][j] << '\t';
+                    fout << this->ptr[i][j] << '\t';
                 }
                 fout << endl;
             }
@@ -232,11 +208,11 @@ public:
     void fill()
     {   
             srand(time(nullptr));
-            for (int i = 0; i < height; i++)
+            for (int i = 0; i < this->height; i++)
             {
-                for (int j = 0; j < width; j++)
+                for (int j = 0; j < this->width; j++)
                 {
-                    ptr[i][j] = rand() % 10;
+                    this->ptr[i][j] = rand() % 10;
                 }
             }
     }
@@ -244,12 +220,12 @@ public:
     {
             int sum = 0;
             vector<T> vec;
-            for (int i = 0; i < height; i++)
+            for (int i = 0; i < this->height; i++)
             {
                 sum = 0;
-                for (int j = 0; j < width; j++)
+                for (int j = 0; j < this->width; j++)
                 {
-                    sum += ptr[i][j];
+                    sum += this->ptr[i][j];
                 }
                 vec.push_back(sum);
             }
