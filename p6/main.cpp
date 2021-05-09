@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <cassert>
+#include <fstream>
 
 using namespace std;
 
@@ -24,7 +25,7 @@ struct Stadium
     short unsigned int NumArena;
     friend ostream &operator<<(ostream &s, Stadium &el)
     {
-        s << el.Name << '\t' << el.Sport << '\t' << el.Year << '\t' << el.Watchers << '\t' << el.NumArena << endl;
+        s << hex << el.Name << '\t' << el.Sport << '\t' << el.Year << '\t' << el.Watchers << '\t' << el.NumArena << endl;
         return s;
     }
 };
@@ -289,6 +290,7 @@ public:
         while (q.LinkedList<T>::head != nullptr)
         {
             pop();
+            q.LinkedList<T>::count=0;
         }
         T c;
         Element<T> *current = LinkedList<T>::head;
@@ -298,6 +300,7 @@ public:
             if (c.Year < y)
             {
                 q.push(c);
+                q.LinkedList<T>::count++;
             }
             
             current = current->getNext();
@@ -308,6 +311,7 @@ public:
         while (q.LinkedList<T>::head != nullptr)
         {
             pop();
+            q.LinkedList<T>::count=0;
         }
         T c;
         Element<T> *current = LinkedList<T>::head;
@@ -317,11 +321,48 @@ public:
             if (c.Year > y)
             {
                 q.push(c);
+                q.LinkedList<T>::count++;
             }
             
             current = current->getNext();
         }
     }
+
+    void const Save(string filename)
+    {
+        ofstream fout(filename);
+        assert(fout.is_open());
+        Element<T> *current = LinkedList<T>::head;
+        T c;
+        while (current!=nullptr)
+        {
+            c = current->getInfo();
+            fout <<c.Name <<'\t' <<c.Sport <<'\t'<<c.Year <<'\t'<<c.Watchers <<'\t'<<c.NumArena << endl ;
+            current = current->getNext();            
+        }
+        fout.close();
+        
+    }
+    FIFO<T>(string filename,int len)
+    {
+        ifstream fin(filename);
+        assert(fin.is_open());
+        Stadium c;
+        LinkedList<T>::count = len;
+        for (int i = 0 ; i < len;i++)
+        {
+            fin >> c.Name >> c.Sport >> c.Year >> c.Watchers >> c.NumArena;
+            this->push(c);
+        }
+        
+
+         fin.close();
+       
+    }
+
+
+
+
     ~FIFO()
     {
         cout << "destr fifo" << endl;
@@ -353,6 +394,8 @@ int main()
     FIFO<Stadium> b;
     a.FilterByYearYounger(2000,b);
     cout << b<< endl;
-
+    a.Save("qwe.txt");
+    FIFO <Stadium> qwe("qwe.txt",3) ;
+    cout << qwe << endl;
     return 0;
 }
