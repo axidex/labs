@@ -9,7 +9,6 @@ using namespace std;
 
 struct Stadium
 {
-
     Stadium()
     {
         Name = "Null";
@@ -33,7 +32,7 @@ struct Stadium
 template <class T>
 class Element
 {
-public:
+protected:
     Element* next;
     Element* prev;
     T info;
@@ -56,10 +55,30 @@ public:
         prev = el.prev;
         info = el.info;
     }
+    Element* getNext()
+    {
+        return next;
+    }
+    void setNext(Element* n)
+    {
+        next = n;
+    }
+    Element* getPrev()
+    {
+        return prev;
+    }
+    void setPrev(Element* p)
+    {
+        prev = p;
+    }
     friend ostream& operator<<(ostream& s, Element<T>& el)
     {
         s << el.info;
         return s;
+    }
+    T getInfo()
+    {
+        return info;
     }
 };
 
@@ -84,7 +103,7 @@ public:
         Element<T>* current = head;
         for (int i = 0;
             current != nullptr && i < index;
-            current = current->next, i++)
+            current = current->getNext(), i++)
             ;
         return *current;
     }
@@ -95,7 +114,7 @@ public:
     friend ostream& operator<<(ostream& s, LinkedList<T>& el)
     {
         Element<T>* current;
-        for (current = el.head; current != nullptr; current = current->next)
+        for (current = el.head; current != nullptr; current = current->getNext())
             s << *current;
         return s;
     }
@@ -125,9 +144,9 @@ public:
         else
         {
             //элементы уже есть
-            LinkedList<T>::tail->next = new Element<T>(value);
-            LinkedList<T>::tail->next->prev = LinkedList<T>::tail;
-            LinkedList<T>::tail = LinkedList<T>::tail->next;
+            LinkedList<T>::tail->setNext(new Element<T>(value));
+            (LinkedList<T>::tail->getNext())->setPrev(LinkedList<T>::tail) ;
+            LinkedList<T>::tail = LinkedList<T>::tail->getNext();
         }
         LinkedList<T>::count++;
         return LinkedList<T>::tail;
@@ -140,7 +159,7 @@ public:
         while (current != nullptr)
         {
             if (counter == index) { break; }
-            current = current->next;
+            current = current->getNext();
             counter++;
         }
         if (LinkedList<T>::head == nullptr)
@@ -153,33 +172,33 @@ public:
         {
             Element<T>* tmp = new Element<T>(value);
             LinkedList<T>::head = tmp;
-            tmp->next = LinkedList<T>::tail;
-            LinkedList<T>::tail->next = nullptr;
+            tmp->setNext(LinkedList<T>::tail);
+            LinkedList<T>::tail->setNext(nullptr);
         }
         else if (index == 0)
         {
             Element<T>* tmp = new Element<T>(value);
             Element<T>* temp = LinkedList<T>::head;
             LinkedList<T>::head = tmp;
-            temp->prev = tmp;
-            tmp->next = temp;
+            temp->setPrev(tmp);
+            tmp->setNext(temp);
         }
         else if (index == LinkedList<T>::count - 1)
         {
             Element<T>* tmp = new Element<T>(value);
-            Element<T>* temp = LinkedList<T>::tail->prev;
-            tmp->next = LinkedList<T>::tail;
-            tmp->prev = temp;
-            temp->next = tmp;
+            Element<T>* temp = LinkedList<T>::tail->getPrev();
+            tmp->setNext(LinkedList<T>::tail);
+            tmp->setPrev(temp);
+            temp->setNext(tmp);
         }
         else
         {
             Element<T>* tmp = new Element<T>(value);
-            tmp->prev = current;
-            tmp->next = current->next;
-            current->next = tmp;
-            current = current->next;
-            current->prev = tmp;
+            tmp->setPrev(current);
+            tmp->setNext(current->getNext());
+            current->setNext(tmp);
+            current = current->getNext();
+            current->setPrev(tmp);
 
         }
         LinkedList<T>::count++;
@@ -200,26 +219,26 @@ public:
         while (current != nullptr)
         {
             if (counter == index) { break; }
-            current = current->next;
+            current = current->getNext();
             counter++;
         }
         if (index == 0)
         {
-            LinkedList<T>::head = LinkedList<T>::head->next;
-            LinkedList<T>::head->prev = nullptr;
+            LinkedList<T>::head = LinkedList<T>::head->getNext();
+            LinkedList<T>::head->setPrev(nullptr);
         }
         else if (index == LinkedList<T>::count - 1)
         {
-            Element<T>* temp = LinkedList<T>::tail->prev;
+            Element<T>* temp = LinkedList<T>::tail->getPrev();
             LinkedList<T>::tail = temp;
-            temp->next = nullptr;
+            temp->setNext(nullptr);
         }
         else
         {
-            Element<T>* tmp = current->prev;
-            current = current->next;
-            tmp->next = current;
-            current->prev = tmp;
+            Element<T>* tmp = current->getPrev();
+            current = current->getNext();
+            tmp->setNext(current);
+            current->setPrev(tmp);
         }
         LinkedList<T>::count--;
 
@@ -233,7 +252,7 @@ public:
         if (LinkedList<T>::head == LinkedList<T>::tail)
             LinkedList<T>::head = LinkedList<T>::tail = nullptr;
         else
-            LinkedList<T>::head = LinkedList<T>::head->next;
+            LinkedList<T>::head = LinkedList<T>::head->getNext();
         LinkedList<T>::count--;
         return res;
     }
