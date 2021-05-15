@@ -101,6 +101,7 @@ protected:
 public:
     LinkedList()
     {
+        cout<<"LinkedList const"<<endl;
         head = tail = nullptr;
         count = 0;
     }
@@ -146,7 +147,7 @@ template <class T>
 class FIFO : public LinkedList<T>
 {
 public:
-    FIFO<T>() : LinkedList<T>() {}
+    FIFO<T>() : LinkedList<T>() {cout<<"FIFO const"<<endl;}
     FIFO<T>(T* arr, int len) : LinkedList<T>(arr, len) {}
     FIFO<T>(FIFO<T>& f)
     {
@@ -387,7 +388,7 @@ public:
 
 int main()
 {
-    srand(time(nullptr));
+    /* srand(time(nullptr));
     FIFO<Stadium> a;
     Stadium arena;
     Stadium arena2;
@@ -411,12 +412,12 @@ int main()
     cout << b << endl;
     a.Save("qwe.txt");
     FIFO<Stadium> qwe("qwe.txt", 3);
-    cout << qwe << endl; 
+    cout << qwe << endl;  */
 
-    LinkedList<Stadium>* ptr = new LinkedList<Stadium>[10];
+    LinkedList<Stadium>* ptr = new LinkedList<Stadium>;
     FIFO<Stadium>* newptr = reinterpret_cast<FIFO<Stadium>*>(ptr);
     
-    delete[] newptr;
+    delete newptr;
     
     return 0;
 }
