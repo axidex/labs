@@ -5,6 +5,7 @@
 #include <time.h>
 #include <cassert>
 #include <fstream>
+#include <iomanip>
 /* Структура «Стадион».
 Минимальный набор полей: название, виды спорта, год постройки, вместимость,
 количество арен.
@@ -31,7 +32,7 @@ struct Stadium
     short unsigned int NumArena;
     friend ostream &operator<<(ostream &s, Stadium &el)
     {
-        s << hex << el.Name << '\t' << el.Sport << '\t' << el.Year << '\t' << el.Watchers << '\t' << el.NumArena << endl;
+        s << resetiosflags(ios::left) << hex << el.Name << '\t' << el.Sport << '\t' << el.Year << '\t' << el.Watchers << '\t' << el.NumArena << endl;
         return s;
     }
 };
@@ -127,8 +128,15 @@ public:
     }
     virtual ~LinkedList()
     {
-        cout << "\nBase class destructor"<<endl;
-        
+        cout << "\nBase class destructor" << endl;
+        while (LinkedList<T>::head != nullptr)
+        {
+            if (LinkedList<T>::head == LinkedList<T>::tail)
+                LinkedList<T>::head = LinkedList<T>::tail = nullptr;
+            else
+                LinkedList<T>::head = LinkedList<T>::head->getNext();
+            LinkedList<T>::count--;
+        }
         head = nullptr;
         tail = nullptr;
     }
@@ -140,13 +148,13 @@ class FIFO : public LinkedList<T>
 public:
     FIFO<T>() : LinkedList<T>() {}
     FIFO<T>(T *arr, int len) : LinkedList<T>(arr, len) {}
-    FIFO<T>(FIFO<T>& f)
+    FIFO<T>(FIFO<T> &f)
     {
         Element<T> *current = f.LinkedList<T>::head;
         while (current != nullptr)
         {
             this->push(current->getInfo());
-            current= current->getNext();
+            current = current->getNext();
         }
     }
     Element<T> *push(T value)
@@ -287,49 +295,49 @@ public:
             {
                 return true;
             }
-            current=current->getNext();
+            current = current->getNext();
         }
         return false;
     }
-    void FilterByYearOlder(int y,FIFO<T>& q)
+    void FilterByYearOlder(int y, FIFO<T> &q)
     {
         while (q.LinkedList<T>::head != nullptr)
         {
             pop();
-            q.LinkedList<T>::count=0;
+            q.LinkedList<T>::count = 0;
         }
         T c;
         Element<T> *current = LinkedList<T>::head;
         while (current != nullptr)
         {
-            c = current->getInfo(); 
+            c = current->getInfo();
             if (c.Year < y)
             {
                 q.push(c);
                 q.LinkedList<T>::count++;
             }
-            
+
             current = current->getNext();
         }
     }
-    void FilterByYearYounger(int y,FIFO<T>& q)
+    void FilterByYearYounger(int y, FIFO<T> &q)
     {
         while (q.LinkedList<T>::head != nullptr)
         {
             pop();
-            q.LinkedList<T>::count=0;
+            q.LinkedList<T>::count = 0;
         }
         T c;
         Element<T> *current = LinkedList<T>::head;
         while (current != nullptr)
         {
-            c = current->getInfo(); 
+            c = current->getInfo();
             if (c.Year > y)
             {
                 q.push(c);
                 q.LinkedList<T>::count++;
             }
-            
+
             current = current->getNext();
         }
     }
@@ -340,40 +348,40 @@ public:
         assert(fout.is_open());
         Element<T> *current = LinkedList<T>::head;
         T c;
-        while (current!=nullptr)
+        while (current != nullptr)
         {
             c = current->getInfo();
-            fout <<c.Name <<'\t' <<c.Sport <<'\t'<<c.Year <<'\t'<<c.Watchers <<'\t'<<c.NumArena << endl ;
-            current = current->getNext();            
+            fout << c.Name << '\t' << c.Sport << '\t' << c.Year << '\t' << c.Watchers << '\t' << c.NumArena << endl;
+            current = current->getNext();
         }
         fout.close();
-        
     }
-    FIFO<T>(string filename,int len)
+    FIFO<T>(string filename, int len)
     {
         ifstream fin(filename);
         assert(fin.is_open());
         Stadium c;
         LinkedList<T>::count = len;
-        for (int i = 0 ; i < len;i++)
+        for (int i = 0; i < len; i++)
         {
             fin >> c.Name >> c.Sport >> c.Year >> c.Watchers >> c.NumArena;
             this->push(c);
         }
-        
 
-         fin.close();
-       
+        fin.close();
     }
-
-
-
 
     ~FIFO()
     {
         cout << "destr fifo" << endl;
         while (LinkedList<T>::head != nullptr)
-            pop();
+        {
+            if (LinkedList<T>::head == LinkedList<T>::tail)
+                LinkedList<T>::head = LinkedList<T>::tail = nullptr;
+            else
+                LinkedList<T>::head = LinkedList<T>::head->getNext();
+            LinkedList<T>::count--;
+        }
     }
 };
 
@@ -386,7 +394,7 @@ int main()
     Stadium arena3;
     a.push(arena);
     a.push(arena2);
-
+    
     cout << a;
     cout << endl;
     cout << a[0];
@@ -395,13 +403,17 @@ int main()
     a.insert(arena3, 1);
     a.insert(arena3, 1);
     a.Remove(1);
-    
-    cout << a << endl << endl;
+
+    cout << a << endl
+         << endl;
     FIFO<Stadium> b;
-    a.FilterByYearYounger(2000,b);
-    cout << b<< endl;
+    a.FilterByYearYounger(2000, b);
+    cout << b << endl;
     a.Save("qwe.txt");
-    FIFO <Stadium> qwe("qwe.txt",3) ;
+    FIFO<Stadium> qwe("qwe.txt", 3);
     cout << qwe << endl;
-    return 0;
+    
+    FIFO<Stadium>* ptr = new FIFO<Stadium> [10];
+    delete[] ptr;
+    return 0; 
 }
