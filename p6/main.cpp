@@ -101,7 +101,7 @@ protected:
 public:
     LinkedList()
     {
-        cout<<"LinkedList const"<<endl;
+        cout << "LinkedList const" << endl;
         head = tail = nullptr;
         count = 0;
     }
@@ -129,17 +129,31 @@ public:
     }
     virtual ~LinkedList()
     {
-        cout << "\nBase class destructor" << endl;
+        cout << "destr BASE" << endl;
+        Element<T>* current = nullptr;
         while (LinkedList<T>::head != nullptr)
         {
             if (LinkedList<T>::head == LinkedList<T>::tail)
+            {
+                if (LinkedList<T>::head != nullptr)
+                {
+                    delete LinkedList<T>::head;
+                }
+
                 LinkedList<T>::head = LinkedList<T>::tail = nullptr;
+            }
             else
+            {
+                current = LinkedList<T>::head;
                 LinkedList<T>::head = LinkedList<T>::head->getNext();
+                if (current != nullptr)
+                {
+                    delete current;
+                }
+                current = nullptr;
+            }
             LinkedList<T>::count--;
         }
-        head = nullptr;
-        tail = nullptr;
     }
 };
 
@@ -147,7 +161,7 @@ template <class T>
 class FIFO : public LinkedList<T>
 {
 public:
-    FIFO<T>() : LinkedList<T>() {cout<<"FIFO const"<<endl;}
+    FIFO<T>() : LinkedList<T>() { cout << "FIFO const" << endl; }
     FIFO<T>(T* arr, int len) : LinkedList<T>(arr, len) {}
     FIFO<T>(FIFO<T>& f)
     {
@@ -372,15 +386,31 @@ public:
         fin.close();
     }
 
-    ~FIFO()
+    ~FIFO() override
     {
         cout << "destr fifo" << endl;
+        Element<T>* current = nullptr;
         while (LinkedList<T>::head != nullptr)
         {
             if (LinkedList<T>::head == LinkedList<T>::tail)
+            {
+                if (LinkedList<T>::head != nullptr)
+                {
+                    delete LinkedList<T>::head;
+                }
+
                 LinkedList<T>::head = LinkedList<T>::tail = nullptr;
+            }
             else
+            {
+                current = LinkedList<T>::head;
                 LinkedList<T>::head = LinkedList<T>::head->getNext();
+                if (current != nullptr)
+                {
+                    delete current;
+                }
+                current = nullptr;
+            }
             LinkedList<T>::count--;
         }
     }
@@ -388,36 +418,25 @@ public:
 
 int main()
 {
-    /* srand(time(nullptr));
-    FIFO<Stadium> a;
-    Stadium arena;
-    Stadium arena2;
-    Stadium arena3;
-    a.push(arena);
-    a.push(arena2);
+    // srand(time(nullptr));
+    //FIFO<Stadium> a;
+    //Stadium arena;
+    //Stadium arena2;
+    //Stadium arena3;
+    //a.push(arena);
+    //a.push(arena2);
+    //cout<< a << endl ;
+    //a.pop();
+    //cout << a;
 
-    cout << a;
-    cout << endl;
-    cout << a[0];
-    cout << endl
-         << endl;
-    a.insert(arena3, 1);
-    a.insert(arena3, 1);
-    a.Remove(1);
 
-    cout << a << endl
-         << endl;
-    FIFO<Stadium> b;
-    a.FilterByYearYounger(2000, b);
-    cout << b << endl;
-    a.Save("qwe.txt");
-    FIFO<Stadium> qwe("qwe.txt", 3);
-    cout << qwe << endl;  */
 
-    LinkedList<Stadium>* ptr = new LinkedList<Stadium>;
-    FIFO<Stadium>* newptr = reinterpret_cast<FIFO<Stadium>*>(ptr);
-    
-    delete newptr;
-    
+
+    LinkedList<Stadium>* ptr = new LinkedList<Stadium>[10];
+    FIFO<Stadium>* newptr = dynamic_cast<FIFO<Stadium>*>(ptr);
+
+    //delete[] newptr;
+    delete[] ptr;
+
     return 0;
 }
