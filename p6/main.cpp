@@ -30,7 +30,7 @@ struct Stadium
     short unsigned int Year;
     unsigned int Watchers;
     short unsigned int NumArena;
-    friend ostream& operator<<(ostream& s, Stadium& el)
+    friend ostream &operator<<(ostream &s, Stadium &el)
     {
         s << resetiosflags(ios::left) << hex << el.Name << '\t' << el.Sport << '\t' << el.Year << '\t' << el.Watchers << '\t' << el.NumArena << endl;
         return s;
@@ -41,8 +41,8 @@ template <class T>
 class Element
 {
 protected:
-    Element* next;
-    Element* prev;
+    Element *next;
+    Element *prev;
     T info;
 
 public:
@@ -51,35 +51,35 @@ public:
         next = prev = nullptr;
         info = data;
     }
-    Element(Element* Next, Element* Prev, T data)
+    Element(Element *Next, Element *Prev, T data)
     {
         next = Next;
         prev = Prev;
         info = data;
     }
-    Element(const Element& el)
+    Element(const Element &el)
     {
         next = el.next;
         prev = el.prev;
         info = el.info;
     }
-    Element* getNext()
+    Element *getNext()
     {
         return next;
     }
-    void setNext(Element* n)
+    void setNext(Element *n)
     {
         next = n;
     }
-    Element* getPrev()
+    Element *getPrev()
     {
         return prev;
     }
-    void setPrev(Element* p)
+    void setPrev(Element *p)
     {
         prev = p;
     }
-    friend ostream& operator<<(ostream& s, Element<T>& el)
+    friend ostream &operator<<(ostream &s, Element<T> &el)
     {
         s << el.info;
         return s;
@@ -94,8 +94,8 @@ template <class T>
 class LinkedList
 {
 protected:
-    Element<T>* head;
-    Element<T>* tail;
+    Element<T> *head;
+    Element<T> *tail;
     int count;
 
 public:
@@ -107,12 +107,12 @@ public:
     }
     //virtual Element<T>* pop() {}
     //virtual Element<T>* push(T value) {}
-    Element<T>& operator[](int index)
+    Element<T> &operator[](int index)
     {
-        Element<T>* current = head;
+        Element<T> *current = head;
         for (int i = 0;
-            current != nullptr && i < index;
-            current = current->getNext(), i++)
+             current != nullptr && i < index;
+             current = current->getNext(), i++)
             ;
         return *current;
     }
@@ -120,9 +120,9 @@ public:
     {
         return (LinkedList<T>::count == 0);
     }
-    friend ostream& operator<<(ostream& s, LinkedList<T>& el)
+    friend ostream &operator<<(ostream &s, LinkedList<T> &el)
     {
-        Element<T>* current;
+        Element<T> *current;
         for (current = el.head; current != nullptr; current = current->getNext())
             s << *current;
         return s;
@@ -130,7 +130,7 @@ public:
     virtual ~LinkedList()
     {
         cout << "destr BASE" << endl;
-        Element<T>* current = nullptr;
+        Element<T> *current = nullptr;
         while (LinkedList<T>::head != nullptr)
         {
             if (LinkedList<T>::head == LinkedList<T>::tail)
@@ -162,17 +162,17 @@ class FIFO : public LinkedList<T>
 {
 public:
     FIFO<T>() : LinkedList<T>() { cout << "FIFO const" << endl; }
-    FIFO<T>(T* arr, int len) : LinkedList<T>(arr, len) {}
-    FIFO<T>(FIFO<T>& f)
+    FIFO<T>(T *arr, int len) : LinkedList<T>(arr, len) {}
+    FIFO<T>(FIFO<T> &f)
     {
-        Element<T>* current = f.LinkedList<T>::head;
+        Element<T> *current = f.LinkedList<T>::head;
         while (current != nullptr)
         {
             this->push(current->getInfo());
             current = current->getNext();
         }
     }
-    Element<T>* push(T value)
+    Element<T> *push(T value)
     {
         if (LinkedList<T>::head == nullptr) //if(count==0)
         {
@@ -194,7 +194,7 @@ public:
     {
         assert(!(index >= LinkedList<T>::count));
         int counter = 0;
-        Element<T>* current = LinkedList<T>::head;
+        Element<T> *current = LinkedList<T>::head;
         while (current != nullptr)
         {
             if (counter == index)
@@ -212,30 +212,30 @@ public:
         }
         else if (LinkedList<T>::count == 1)
         {
-            Element<T>* tmp = new Element<T>(value);
+            Element<T> *tmp = new Element<T>(value);
             LinkedList<T>::head = tmp;
             tmp->setNext(LinkedList<T>::tail);
             LinkedList<T>::tail->setNext(nullptr);
         }
         else if (index == 0)
         {
-            Element<T>* tmp = new Element<T>(value);
-            Element<T>* temp = LinkedList<T>::head;
+            Element<T> *tmp = new Element<T>(value);
+            Element<T> *temp = LinkedList<T>::head;
             LinkedList<T>::head = tmp;
             temp->setPrev(tmp);
             tmp->setNext(temp);
         }
         else if (index == LinkedList<T>::count - 1)
         {
-            Element<T>* tmp = new Element<T>(value);
-            Element<T>* temp = LinkedList<T>::tail->getPrev();
+            Element<T> *tmp = new Element<T>(value);
+            Element<T> *temp = LinkedList<T>::tail->getPrev();
             tmp->setNext(LinkedList<T>::tail);
             tmp->setPrev(temp);
             temp->setNext(tmp);
         }
         else
         {
-            Element<T>* tmp = new Element<T>(value);
+            Element<T> *tmp = new Element<T>(value);
             tmp->setPrev(current);
             tmp->setNext(current->getNext());
             current->setNext(tmp);
@@ -256,7 +256,7 @@ public:
             return;
         }
         int counter = 0;
-        Element<T>* current = LinkedList<T>::head;
+        Element<T> *current = LinkedList<T>::head;
         while (current != nullptr)
         {
             if (counter == index)
@@ -273,34 +273,36 @@ public:
         }
         else if (index == LinkedList<T>::count - 1)
         {
-            Element<T>* temp = LinkedList<T>::tail->getPrev();
+            Element<T> *temp = LinkedList<T>::tail->getPrev();
             LinkedList<T>::tail = temp;
             temp->setNext(nullptr);
         }
         else
         {
-            Element<T>* tmp = current->getPrev();
+            Element<T> *tmp = current->getPrev();
             current = current->getNext();
             tmp->setNext(current);
             current->setPrev(tmp);
         }
         LinkedList<T>::count--;
     }
-    Element<T>* pop()
+    Element<T> *pop()
     {
         if (LinkedList<T>::head == nullptr)
             return nullptr;
-        Element<T>* res = LinkedList<T>::head;
+        Element<T> *res = LinkedList<T>::head;
         if (LinkedList<T>::head == LinkedList<T>::tail)
             LinkedList<T>::head = LinkedList<T>::tail = nullptr;
         else
             LinkedList<T>::head = LinkedList<T>::head->getNext();
+        res->setNext(nullptr);
+        res->setPrev(nullptr);
         LinkedList<T>::count--;
         return res;
     }
     bool FindByName(string a)
     {
-        Element<T>* current = LinkedList<T>::head;
+        Element<T> *current = LinkedList<T>::head;
         T c;
         while (current != nullptr)
         {
@@ -314,15 +316,18 @@ public:
         }
         return false;
     }
-    void FilterByYearOlder(int y, FIFO<T>& q)
+    void FilterByYearOlder(int y, FIFO<T> &q)
     {
         while (q.LinkedList<T>::head != nullptr)
         {
-            pop();
-            q.LinkedList<T>::count = 0;
+            if (LinkedList<T>::head == LinkedList<T>::tail)
+                LinkedList<T>::head = LinkedList<T>::tail = nullptr;
+            else
+                LinkedList<T>::head = LinkedList<T>::head->getNext();
         }
+        q.LinkedList<T>::count = 0;
         T c;
-        Element<T>* current = LinkedList<T>::head;
+        Element<T> *current = LinkedList<T>::head;
         while (current != nullptr)
         {
             c = current->getInfo();
@@ -335,15 +340,19 @@ public:
             current = current->getNext();
         }
     }
-    void FilterByYearYounger(int y, FIFO<T>& q)
+    void FilterByYearYounger(int y, FIFO<T> &q)
     {
         while (q.LinkedList<T>::head != nullptr)
         {
-            pop();
-            q.LinkedList<T>::count = 0;
+            if (LinkedList<T>::head == LinkedList<T>::tail)
+                LinkedList<T>::head = LinkedList<T>::tail = nullptr;
+            else
+                LinkedList<T>::head = LinkedList<T>::head->getNext();
+            
         }
+        q.LinkedList<T>::count = 0;
         T c;
-        Element<T>* current = LinkedList<T>::head;
+        Element<T> *current = LinkedList<T>::head;
         while (current != nullptr)
         {
             c = current->getInfo();
@@ -361,7 +370,7 @@ public:
     {
         ofstream fout(filename);
         assert(fout.is_open());
-        Element<T>* current = LinkedList<T>::head;
+        Element<T> *current = LinkedList<T>::head;
         T c;
         while (current != nullptr)
         {
@@ -385,56 +394,27 @@ public:
 
         fin.close();
     }
-
-    ~FIFO() override
-    {
-        cout << "destr fifo" << endl;
-        Element<T>* current = nullptr;
-        while (LinkedList<T>::head != nullptr)
-        {
-            if (LinkedList<T>::head == LinkedList<T>::tail)
-            {
-                if (LinkedList<T>::head != nullptr)
-                {
-                    delete LinkedList<T>::head;
-                }
-
-                LinkedList<T>::head = LinkedList<T>::tail = nullptr;
-            }
-            else
-            {
-                current = LinkedList<T>::head;
-                LinkedList<T>::head = LinkedList<T>::head->getNext();
-                if (current != nullptr)
-                {
-                    delete current;
-                }
-                current = nullptr;
-            }
-            LinkedList<T>::count--;
-        }
-    }
+    
 };
 
 int main()
 {
-    // srand(time(nullptr));
+    //srand(time(nullptr));
     //FIFO<Stadium> a;
     //Stadium arena;
     //Stadium arena2;
     //Stadium arena3;
     //a.push(arena);
     //a.push(arena2);
-    //cout<< a << endl ;
-    //a.pop();
+    //cout << a << endl
+    //     << endl;
+    //cout << *a.pop() << endl;
+
     //cout << a;
-
-
-
 
     LinkedList<Stadium>* ptr = new LinkedList<Stadium>[10];
     FIFO<Stadium>* newptr = dynamic_cast<FIFO<Stadium>*>(ptr);
-
+    
     //delete[] newptr;
     delete[] ptr;
 
